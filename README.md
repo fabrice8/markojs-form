@@ -23,7 +23,7 @@ $ npm install markojs-form
 Install using yarn
 
 ```shell
-$ yar add markojs-form
+$ yarn add markojs-form
 ```
 
 ## Usage
@@ -91,7 +91,7 @@ All these methods assigned approprietly to the various form tags, empowers the *
 
 When filling the input form below, **FormHandler** automatically update `this.state.form.name` at every input & change events, allowing the component state to be updated.
 
-```HTML
+```marko
 <input type="text"
         name="name"
         value=state.form.name
@@ -137,7 +137,7 @@ class {
 
 Manually define the status of error of a given input. `status` can be a simple boolean: `true` meaning there's an error and `false` to cancel error. `status` can also be a string text message describing the error: Very usefull when the error must be displayed to the user.
 
-```javascript
+```marko
 class {
     // ...
     onSubmit(){
@@ -183,15 +183,13 @@ class {
 
 Display general alert of the form component
 
-```javascript
+```marko
 class {
     onSubmit(){
         fhandler.alert('Unexpected Error Occured! Try again', 'warning')
     }
 }
-```
 
-```HTML
 <FormAlert alert=state.alert/>
 ```
 
@@ -223,14 +221,13 @@ Define custom validation rule. There are several ways of defining validation rul
 
 **Examples**
 
-```javascript
+```marko
 class {
     onCreate(){
         fhandler.define([{ name: 'custom1', regexp: '/\.+/' }, { name: 'custom2', regexp: '/\w+/' }])
     }
 }
-```
-```HTML
+
 <div>
     <!-- Use inbuild rules -->
     <input type="email"
