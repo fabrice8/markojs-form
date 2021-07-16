@@ -13,6 +13,8 @@
  * @Dependencies
  * 		- UIStore Plugin for the auto-save feature. Check https://github.com/fabrice8/ui-store
  */
+import UIStore from '@fabrice8/ui-store'
+
 function Patterns(){
 
 	const
@@ -183,10 +185,7 @@ store = 'fh--auto-fill',
 PEvents = [ 'bind', 'unbind', 'input', 'error', 'fill', 'autosave', 'reset' ]
 
 /* Initialize the UI Store plugin */
-if( typeof window.uiStore === undefined )
-	window.UIStore ?
-			window.uiStore = new UIStore({ prefix: 'fh-00', encrypt: true })
-			: console.log('[FormHandler] No UIStore Plugin No Found')
+const uiStore = new UIStore({ prefix: 'fh-00', encrypt: true })
 
 function FormHandler( options ){
 	
@@ -208,8 +207,8 @@ function FormHandler( options ){
 		if( !this.options.key )
 			throw new Error('[FormHandler] Undefined Form Key Identifier. Required for Auto-Save')
 
-		if( window.uiStore )
-			savedData = ( window.uiStore.get( store ) || {} )[ this.options.key ] || {}
+		if( uiStore )
+			savedData = ( uiStore.get( store ) || {} )[ this.options.key ] || {}
 	}
 
 	function applyChange({ value, name, pattern }){
@@ -250,17 +249,17 @@ function FormHandler( options ){
 
 		if( !self.options.key || !self.options.autosave ) return
 
-		const allSaved = window.uiStore.get( store ) || {}
+		const allSaved = uiStore.get( store ) || {}
 		allSaved[ self.options.key ] = self.form
 
-		window.uiStore.set( store, allSaved )
+		uiStore.set( store, allSaved )
 		fireEvent( 'autosave', [ self.form ] )
 	}
 
 	function autoClear(){
 
 		if( !self.options.key ) return
-		window.uiStore.update( store, self.options.key, 'delete' )
+		uiStore.update( store, self.options.key, 'delete' )
 	}
 
     function fireEvent( name, args ){
@@ -348,7 +347,7 @@ function FormHandler( options ){
 		fireEvent( 'input', [ name, data ] )
 
 		// Form auto-saving activated
-		if( this.options.autosave && window.uiStore ) autoSave()
+		if( this.options.autosave && uiStore ) autoSave()
 
 		return this
 	}
@@ -361,7 +360,7 @@ function FormHandler( options ){
 		fireEvent( 'fill', [ this.form ] )
 
 		// Form auto-saving activated
-		if( this.options.autosave && window.uiStore ) autoSave()
+		if( this.options.autosave && uiStore ) autoSave()
 
       	return this
 	}
@@ -385,7 +384,7 @@ function FormHandler( options ){
 		// Set form initial states
 		this.component.setState({ form: this.initForm, formError: this.formError })
 		// Clear existing form auto-save data
-		window.uiStore && autoClear()
+		uiStore && autoClear()
 
 		fireEvent('reset')
 		return this

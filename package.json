@@ -1,0 +1,27 @@
+{
+  "name": "markojs-form",
+  "version": "1.0.0",
+  "description": "Form Component Handler Library for MarkoJS",
+  "main": "markojs-form.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabrice8/markojs-form.git"
+  },
+  "keywords": [
+    "marko",
+    "marko-js",
+    "form-handler"
+  ],
+  "author": "Fabrice Marlboro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fabrice8/markojs-form/issues"
+  },
+  "homepage": "https://github.com/fabrice8/markojs-form#readme",
+  "dependencies": {
+    "@fabrice8/ui-store": "^1.0.2"
+  }
+}
