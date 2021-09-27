@@ -1,7 +1,7 @@
 @MarkoJS Form Handler
 ==================================================
 
-Form Component Handler Library for [MarkoJS]. This library simplify how to handle the flow within a [MarkoJS] form component by handling all input fields **events**, **auto-fill**, **auto-completition**, **validation** and the **form submission** by binding to the component. Enough talking, let get to the facts.
+Form Component Handler Library for [MarkoJS]. This library simplify how to handle the flow within a [MarkoJS] form component by handling all input fields **events**, **auto-fill**, **auto-saving**, **auto-completition**, **validation** and the **form submission** by binding to the `this` of the component. Enough talking, let get to the facts.
 
 [![npm version][npm-badge]][npm]
 [![dependency status][dep-badge]][dep-status]
@@ -31,11 +31,11 @@ $ yarn add markojs-form
 Create new instance of the FormHandler Object Class.
 
 ```javascript
-const FormHandler = require('markojs-form'); // CommonJS
+const FormHandler = require('markojs-form');
 
 // or 
 
-import FormHandler from 'markojs-form'; // ESM
+import FormHandler from 'markojs-form';
 
 static const options = {
     key: 'form-id',
@@ -44,9 +44,18 @@ static const options = {
 }
 
 static const fhandler = new FormHandler( options );
+
+// or inside a class method
+
+class {
+    onCreate(){
+        // ...
+        this.fhandler = new FormHandler( options )
+    }
+}
 ```
 
-**Note**: Every component should have its instance of form-handler
+**Important**: Avoid using form-handler instance globally.
 
 ## Options
 
@@ -78,14 +87,14 @@ class {
 
 When this is done, the handler add `form` & `formError` fields to the component state: Eg. `this.state.form`. Those contain respectively the form data and the error status of the form validation.
 
-Also, couple of methods are added as well to the component automatically in order to listen to event that occured when filling & submitting the form.
+Also, couple of methods are automatically bind to the component's class, to listen and handle events that occured when interacting with the form.
 
-- ``__onInput`` Listen to input events 
-- ``__onChange`` Listen to input change events
-- ``__onSelect`` Listen to select change events
-- ``__onChecked`` Listen to checkbox and radio input events
+- ``__onInput`` Method handler for input event
+- ``__onChange`` Method handler for input change event
+- ``__onSelect`` Method handler for select input change event
+- ``__onChecked`` Method handler for checkbox and radio input events
 
-All these methods assigned approprietly to the various form tags, empowers the **FormHandler** to take care of the work of collecting and updating inputs state of the component.
+All these methods assigned approprietly to the various form tags, empowers the **FormHandler** to collect and update the data and errors state of the form component.
 
 **Example**
 
@@ -122,7 +131,7 @@ class {
 
 ### `fill(values)`
 
-Set method can only set on field at a time, while fill method get an object of fields & values to add manually to the form.
+Beside `Set()` method which can only set one field at a time, `fill()` method get an object of multiple fields & values to add manually to the form.
 
 ```javascript
 class {
@@ -135,7 +144,7 @@ class {
 
 ### `error(name, [status])`
 
-Manually define the status of error of a given input. `status` can be a simple boolean: `true` meaning there's an error and `false` to cancel error. `status` can also be a string text message describing the error: Very usefull when the error must be displayed to the user.
+Manually define the status of error of a given input. `status` can be a simple boolean: `true` meaning there's an error and `false` to cancel error. `status` can also be a string text message describing the error: Very usefull to display dynamic error messages to the user.
 
 ```marko
 class {
@@ -156,14 +165,14 @@ class {
             on-change("__onChange")>
     <!-- Dislay error message -->
     <if( state.formError.age )>
-        <p>${state.formError.age}</p>
+        <p>${state.formError.age || 'Your custom error'}</p>
     </if>
 </div>
 ```
 
 ### `reset()`
 
-Set the form back to its initial state. This method is automatilly call when the form get submited. It's also recommaned to call it when the form component `destroy` event occured.
+Set the form back to its initial state. This method is automatilly call when the form get submited. It's also **recommanded** to call it when the form component `onDestroy` event occurs: Proper clean up
 
 ```javascript
 class {
@@ -195,7 +204,7 @@ class {
 
 ## Form Validation
 
-**FormHandler** has couple of in-build validation rules that you can use out of the box.
+**FormHandler** has couple of in-build validation rules that you can use.
 - `required`: Specify that the input field is required
 - `url`: Check whether the input value is a valid URL
 - `domain`: Check whether the input value is a valid Domain/Hostname
@@ -213,11 +222,11 @@ class {
 - `minLength`: Specify the minimun length of the input value
 - `maxLength`: Specify the maximum length of the input value
 
-Anything that is not listed up there, can be define as custom rule with the function below
 
 ### `define(rule)`
 
-Define custom validation rule. There are several ways of defining validation rules: 
+Define your own custom validation rules or overwrite in-build rules. There are 2 ways to define a validation rules: 
+statically using `static or $` or inside the component's class methods or right into the template:
 
 **Examples**
 
@@ -236,18 +245,18 @@ class {
             validate="email"
             on-change("__onChange")>
             
-    <!-- Use and already defined custom rules -->
+    <!-- Use an already defined custom rules -->
     <input type="text"
             name="name"
             value=state.form.name
             validate="custom1"
             on-change("__onChange")>
             
-    <!-- Define custom rule and assign it right way -->
+    <!-- Define and assign custom rules right way -->
     <input type="text"
             name="orderId"
             value=state.form.orderId
-            validate=fhandler.define([ name: 'orderId', regexp: '/PT-(\b+{4,})-00/' ])
+            validate=fhandler.define([{ name: 'orderId', regexp: '/PT-(\b+{4,})-00/' }])
             on-change("__onChange")>
 </div>
 ```
@@ -256,10 +265,22 @@ class {
 
 Manually validate a form field.
 
+```javascript
+class {
+    // ... 
+
+    onCustomHandler( value ){
+        const isValid = fhandler.validate( 'email', value )
+
+        // ...
+    }
+}
+```
+
 
 ## Events
 
-**FormHandler** instanciate the commong EventEmitter Object. Here a couple of events trigger by the form handler: 
+**FormHandler** instanciate [EventEmitter][] Object. Here a couple of events triggered by the form handler: 
 
 * `bind`: When **FormHandler** get bind to the component
 * `unbind`: When **FormHandler** get unbind to the component
@@ -271,7 +292,7 @@ Manually validate a form field.
 
 ### `on(event, fn)`
 
-Declare an event listener
+Register an event listener
 
 ### `off(event, fn)`
 
@@ -299,3 +320,4 @@ This software is free to use under the MIT license. See the [LICENSE file][] for
 
 [LICENSE file]: https://github.com/fabrice8/markojs-form/blob/master/LICENSE
 [Issues here]: https://github.com/fabrice8/markojs-form/issues
+[EventEmitter]: https://www.npmjs.com/package/EventEmitter
