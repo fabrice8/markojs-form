@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/fabrice8/markojs-form#readme",
   "dependencies": {
-    "@fabrice8/ui-store": "^1.0.2"
+    "all-localstorage": "^1.0.1"
   }
 }

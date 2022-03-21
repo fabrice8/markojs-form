@@ -11,66 +11,66 @@
  * 		- crosscheck: <true|false> Re-test the validation patterns of each inputs in the form before submission
  * 
  * @Dependencies
- * 		- UIStore Plugin for the auto-save feature. Check https://github.com/fabrice8/ui-store
+ * 		- UIStore Plugin for the auto-save feature. Check https://github.com/fabrice8/all-localstorage
  */
-import UIStore from '@fabrice8/ui-store'
+import UIStore from 'all-localstorage'
 
 function Patterns(){
-
+	
 	const
-    self = this,
-    PredefineList = {
-        required: value => { return /[a-zA-Z0-9]/.test( value ) },
+	self = this,
+	PredefineList = {
+			required: value => { return /[a-zA-Z0-9]/.test( value ) },
 
-		domain: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)/i.test( value ) },
-		url: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i.test( value ) },
-		email: value => { return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,6}$/i.test( value ) },
+	domain: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)/i.test( value ) },
+	url: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i.test( value ) },
+	email: value => { return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,6}$/i.test( value ) },
 
-		phone: value => { return self.number && /\d{7,}|(\d{2,} ) => {3,}/.test( value ) },
+	phone: value => { return self.number && /\d{7,}|(\d{2,} ) => {3,}/.test( value ) },
 
-		fullname: value => { return /\s+/.test( value ) },
+	fullname: value => { return /\s+/.test( value ) },
 
-		password: ( value, type ) => {
-			// validate a string words
-			let TYPES = { weak: 1, medium: 2, strong: 3, perfect: 4 },
-					stars = 0,
-					status
+	password: ( value, type ) => {
+		// validate a string words
+		let TYPES = { weak: 1, medium: 2, strong: 3, perfect: 4 },
+				stars = 0,
+				status
 
-			// Determine the level of password
-			if( /(?=.*[a-z].*[a-z].*[a-z])/.test( value ) ) stars++ // required string characters
+		// Determine the level of password
+		if( /(?=.*[a-z].*[a-z].*[a-z])/.test( value ) ) stars++ // required string characters
 
-			if( /(?=.*[!@#$&*])/.test( value ) ) stars++ // required at least one special characters
+		if( /(?=.*[!@#$&*])/.test( value ) ) stars++ // required at least one special characters
 
-			if( /(?=.*[A-Z].*[A-Z])/.test( value ) ) stars++ // required at least one capital characters
+		if( /(?=.*[A-Z].*[A-Z])/.test( value ) ) stars++ // required at least one capital characters
 
-			if( /(?=.*[0-9].*[0-9])/.test( value ) ) stars++ // required numbers
+		if( /(?=.*[0-9].*[0-9])/.test( value ) ) stars++ // required numbers
 
-			if( /.{12,20}/.test( value ) ) stars += 2  // should length between 12 - 20 characters as long and strong password
+		if( /.{12,20}/.test( value ) ) stars += 2  // should length between 12 - 20 characters as long and strong password
 
-			else if( /.{8,12}/.test( value ) ) stars++ // should length between 8 - 12 characters as standard
+		else if( /.{8,12}/.test( value ) ) stars++ // should length between 8 - 12 characters as standard
 
-			// Redable password status
-			if( stars >= 0 && stars < 2 ) status = { type: 'weak', indice: 1 }
-			else if( stars >= 2 && stars < 4 ) status = { type: 'medium', indice: 2 }
-			else if( stars >= 4 && stars < 6 ) status = { type: 'strong', indice: 3 }
-			else if( stars >= 6 ) status = { type: 'perfect', indice: 4 }
+		// Redable password status
+		if( stars >= 0 && stars < 2 ) status = { type: 'weak', indice: 1 }
+		else if( stars >= 2 && stars < 4 ) status = { type: 'medium', indice: 2 }
+		else if( stars >= 4 && stars < 6 ) status = { type: 'strong', indice: 3 }
+		else if( stars >= 6 ) status = { type: 'perfect', indice: 4 }
 
-			return TYPES.hasOwnProperty( type ) && TYPES[ type ] <= status.indice
-		},
+		return TYPES.hasOwnProperty( type ) && TYPES[ type ] <= status.indice
+	},
 
-		number: value => { return typeof value == 'number' || Number( value ) !== null },
-		boolean: value => { return typeof value == 'boolean' },
-		array: value => { return Array.isArray( value ) },
-		object: value => { return typeof value == 'object' && !Array.isArray( value ) },
+	number: value => { return typeof value == 'number' || Number( value ) !== null },
+	boolean: value => { return typeof value == 'boolean' },
+	array: value => { return Array.isArray( value ) },
+	object: value => { return typeof value == 'object' && !Array.isArray( value ) },
 
-		lowercase: value => { return value.toLowerCase() == value },
-		uppercase: value => { return value.toUpperCase() == value },
+	lowercase: value => { return value.toLowerCase() == value },
+	uppercase: value => { return value.toUpperCase() == value },
 
-		length: ( value, size ) => { return value.length == parseInt( size ) },
-		minLength: ( value, size ) => { return value.length >= parseInt( size ) },
-		maxLength: ( value, size ) => { return value.length <= parseInt( size ) }
-    },
-    CustomList = {}
+	length: ( value, size ) => { return value.length == parseInt( size ) },
+	minLength: ( value, size ) => { return value.length >= parseInt( size ) },
+	maxLength: ( value, size ) => { return value.length <= parseInt( size ) }
+	},
+	CustomList = {}
 
 	function extraSet( str ){
 		let combines = str.split(/\s*:\s*/)
@@ -92,10 +92,10 @@ function Patterns(){
 
 	this.add = ( name, regexp ) => CustomList[ name ] = regexp
 
-    this.has = pattern => {
-      // Check a defined pattern: Predefine or custom
-      return PredefineList.hasOwnProperty( pattern ) || CustomList.hasOwnProperty( pattern )
-    }
+	this.has = pattern => {
+		// Check a defined pattern: Predefine or custom
+		return PredefineList.hasOwnProperty( pattern ) || CustomList.hasOwnProperty( pattern )
+	}
 
 	this.test = ( sequence, value ) => {
 
@@ -180,12 +180,10 @@ function subSet( obj, link, data ){
 	return true
 }
 
-let
-store = 'fh--auto-fill',
-PEvents = [ 'bind', 'unbind', 'input', 'error', 'fill', 'autosave', 'reset' ]
+let PEvents = [ 'bind', 'unbind', 'input', 'error', 'fill', 'autosave', 'reset' ]
 
 /* Initialize the UI Store plugin */
-const uiStore = new UIStore({ prefix: 'fh-00', encrypt: true })
+const autofillStore = new UIStore({ prefix: 'fh--auto-fill', encrypt: true })
 
 function FormHandler( options ){
 	
@@ -195,7 +193,7 @@ function FormHandler( options ){
 		autosave: false, // Auto-save form while filling
 		crosscheck: true // Cross check validation pattern at submission
 	},
-    Events = {}
+  Events = {}
 
 	// Merge defined options with the default set.
 	this.options = Object.assign( {}, defaultOptions, options || {} )
@@ -203,18 +201,14 @@ function FormHandler( options ){
 	// Auto-load saved data of this form
 	let savedData
 	if( this.options.autosave ){
-
 		if( !this.options.key )
 			throw new Error('[FormHandler] Undefined Form Key Identifier. Required for Auto-Save')
 
-		if( uiStore )
-			savedData = ( uiStore.get( store ) || {} )[ this.options.key ] || {}
+		if( autofillStore )
+			savedData = autofillStore.get( this.options.key ) || {}
 	}
 
 	function applyChange({ value, name, pattern }){
-
-		const toSet = {}
-		
 		// Edit the form state
 		self.set( name, value )
 		self.formError[ name ] = false
@@ -246,27 +240,21 @@ function FormHandler( options ){
 	}
 
 	function autoSave(){
-
 		if( !self.options.key || !self.options.autosave ) return
-
-		const allSaved = uiStore.get( store ) || {}
-		allSaved[ self.options.key ] = self.form
-
-		uiStore.set( store, allSaved )
+		
+		autofillStore.set( self.options.key, self.form )
 		fireEvent( 'autosave', [ self.form ] )
 	}
 
 	function autoClear(){
-
 		if( !self.options.key ) return
-		uiStore.update( store, self.options.key, 'delete' )
+		autofillStore.clear( self.options.key )
 	}
 
-    function fireEvent( name, args ){
-
-      if( !Events.hasOwnProperty( name ) ) return
-      Events[ name ].map( fn => Array.isArray( args ) ? fn( ...args ) : fn() )
-    }
+	function fireEvent( name, args ){
+		if( !Events.hasOwnProperty( name ) ) return
+		Events[ name ].map( fn => Array.isArray( args ) ? fn( ...args ) : fn() )
+	}
 
 	this.form = {}
 	this.initForm = {}
@@ -274,7 +262,7 @@ function FormHandler( options ){
 	this.formPatterns = {}
 	this.Patterns = new Patterns()
 
-    /*------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------*/
 	// Bind this form to the container component
 	this.bind = ( component, initForm ) => {
 
@@ -318,24 +306,24 @@ function FormHandler( options ){
 		return this
 	}
 
-    // Unbind this form from the container component
-    this.unbind = component => {
+	// Unbind this form from the container component
+	this.unbind = component => {
 
-		component = component || this.component
+	component = component || this.component
 
-		delete component.form
-		delete component.formError
+	delete component.form
+	delete component.formError
 
-		delete component.__onInput
-		delete component.__onChange
-		delete component.__onSelect
-		delete component.__onChecked
+	delete component.__onInput
+	delete component.__onChange
+	delete component.__onSelect
+	delete component.__onChecked
 
-		fireEvent('unbind')
-		return this
-    }
+	fireEvent('unbind')
+	return this
+	}
 
-    /*------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------*/
 	// Set a field to the form
 	this.set = ( name, data ) => {
 		
@@ -347,7 +335,7 @@ function FormHandler( options ){
 		fireEvent( 'input', [ name, data ] )
 
 		// Form auto-saving activated
-		if( this.options.autosave && uiStore ) autoSave()
+		if( this.options.autosave && autofillStore ) autoSave()
 
 		return this
 	}
@@ -360,7 +348,7 @@ function FormHandler( options ){
 		fireEvent( 'fill', [ this.form ] )
 
 		// Form auto-saving activated
-		if( this.options.autosave && uiStore ) autoSave()
+		if( this.options.autosave && autofillStore ) autoSave()
 
       	return this
 	}
@@ -384,7 +372,7 @@ function FormHandler( options ){
 		// Set form initial states
 		this.component.setState({ form: this.initForm, formError: this.formError })
 		// Clear existing form auto-save data
-		uiStore && autoClear()
+		autofillStore && autoClear()
 
 		fireEvent('reset')
 		return this
@@ -404,7 +392,7 @@ function FormHandler( options ){
     	return this
 	}
 
-    /*------------------------------------------------------------------------*/
+  /*------------------------------------------------------------------------*/
 	// Define form & inputs validation patterns
 	this.define = arg => {
 
@@ -444,30 +432,30 @@ function FormHandler( options ){
 		return this.Patterns.test( pattern, value )
 	}
 
-    /*------------------------------------------------------------------------*/
-    // Declare event listeners
-    this.on = ( _event, fn ) => {
-		// bounce unknow events
-		if( !PEvents.includes( _event ) ) return
+	/*------------------------------------------------------------------------*/
+	// Declare event listeners
+	this.on = ( _event, fn ) => {
+	// bounce unknow events
+	if( !PEvents.includes( _event ) ) return
 
-		// Register the listener
-		!Events.hasOwnProperty( _event ) ?
-							Events[ _event ] = [ fn ] // first listener
-							: Events[ _event ].push( fn ) // additional listener
-		return this
-    }
+	// Register the listener
+	!Events.hasOwnProperty( _event ) ?
+						Events[ _event ] = [ fn ] // first listener
+						: Events[ _event ].push( fn ) // additional listener
+	return this
+	}
 
-    // Remove an event listeners
-    this.off = _event => {
-		delete Events[ _event ]
-		return this
-    }
+	// Remove an event listeners
+	this.off = _event => {
+	delete Events[ _event ]
+	return this
+	}
 
-    // Remove all event listeners
-    this.removeListeners = () => {
-		Events = {}
-		return this
-    }
+	// Remove all event listeners
+	this.removeListeners = () => {
+	Events = {}
+	return this
+	}
 }
 
 export default FormHandler

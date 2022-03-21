@@ -5,6 +5,7 @@ Form Component Handler Library for [MarkoJS]. This library simplify how to handl
 
 [![npm version][npm-badge]][npm]
 [![dependency status][dep-badge]][dep-status]
+[![Rate on Openbase](https://badges.openbase.com/js/rating/markojs-form.svg)](https://openbase.com/js/markojs-form?utm_source=embedded&utm_medium=badge&utm_campaign=rate-badge)
 
 [MarkoJS]: https://www.npmjs.org/package/markojs-form
 [npm]: https://www.npmjs.org/package/markojs-form
