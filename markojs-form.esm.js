@@ -20,7 +20,7 @@ function Patterns(){
 	const
 	self = this,
 	PredefineList = {
-			required: value => { return /[a-zA-Z0-9]/.test( value ) },
+			required: value => { return !!value },
 
 	domain: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)/i.test( value ) },
 	url: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i.test( value ) },
@@ -148,7 +148,8 @@ function getAttributes( inputs, type ){
 	}
 	// Markojs component
 	else {
-		value = inputs.pop() || element.input.value,
+		const popValue = inputs.pop()
+    value = popValue !== undefined ? popValue : element.input.value,
 		name = element.input.name,
 		pattern = element.input.validate
 	}
@@ -309,18 +310,18 @@ function FormHandler( options ){
 	// Unbind this form from the container component
 	this.unbind = component => {
 
-	component = component || this.component
+		component = component || this.component
 
-	delete component.form
-	delete component.formError
+		delete component.form
+		delete component.formError
 
-	delete component.__onInput
-	delete component.__onChange
-	delete component.__onSelect
-	delete component.__onChecked
+		delete component.__onInput
+		delete component.__onChange
+		delete component.__onSelect
+		delete component.__onChecked
 
-	fireEvent('unbind')
-	return this
+		fireEvent('unbind')
+		return this
 	}
 
   /*------------------------------------------------------------------------*/
@@ -435,26 +436,26 @@ function FormHandler( options ){
 	/*------------------------------------------------------------------------*/
 	// Declare event listeners
 	this.on = ( _event, fn ) => {
-	// bounce unknow events
-	if( !PEvents.includes( _event ) ) return
+		// bounce unknow events
+		if( !PEvents.includes( _event ) ) return
 
-	// Register the listener
-	!Events.hasOwnProperty( _event ) ?
-						Events[ _event ] = [ fn ] // first listener
-						: Events[ _event ].push( fn ) // additional listener
-	return this
+		// Register the listener
+		!Events.hasOwnProperty( _event ) ?
+							Events[ _event ] = [ fn ] // first listener
+							: Events[ _event ].push( fn ) // additional listener
+		return this
 	}
 
 	// Remove an event listeners
 	this.off = _event => {
-	delete Events[ _event ]
-	return this
+		delete Events[ _event ]
+		return this
 	}
 
 	// Remove all event listeners
 	this.removeListeners = () => {
-	Events = {}
-	return this
+		Events = {}
+		return this
 	}
 }
 

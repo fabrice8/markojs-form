@@ -28,7 +28,7 @@ function Patterns() {
   const self = this,
         PredefineList = {
     required: value => {
-      return /[a-zA-Z0-9]/.test(value);
+      return !!value;
     },
     domain: value => {
       return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)/i.test(value);
@@ -174,7 +174,8 @@ function getAttributes(inputs, type) {
     value = element.getAttribute('type') == 'number' ? parseInt(element.value) : element.value, name = element.getAttribute('name'), pattern = element.getAttribute('validate');
   } // Markojs component
   else {
-    value = inputs.pop() || element.input.value, name = element.input.name, pattern = element.input.validate;
+    const popValue = inputs.pop()
+    value = popValue !== undefined ? popValue : element.input.value, name = element.input.name, pattern = element.input.validate;
   }
 
   switch (type) {
