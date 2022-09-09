@@ -28,7 +28,7 @@ function Patterns() {
   const self = this,
         PredefineList = {
     required: value => {
-      return !!value;
+      return value != undefined
     },
     domain: value => {
       return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)/i.test(value);

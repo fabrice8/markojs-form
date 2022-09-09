@@ -20,8 +20,7 @@ function Patterns(){
 	const
 	self = this,
 	PredefineList = {
-			required: value => { return !!value },
-
+	required: value => { return value != undefined },
 	domain: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)/i.test( value ) },
 	url: value => { return /^((http(s?)|ftp):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&:\/~+#-]*[\w@?^=%&\/~+#-])?/i.test( value ) },
 	email: value => { return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,6}$/i.test( value ) },
